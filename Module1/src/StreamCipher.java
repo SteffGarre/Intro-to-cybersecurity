@@ -31,32 +31,45 @@ public class StreamCipher {
                 Long.parseLong(args[0]);
 
                 if(Long.parseLong(args[0]) < 1){
-                    System.out.println("Integer " + Long.parseLong(args[0]) + " is not allowed as key!");
+                    System.out.println("Integer \"" + Long.parseLong(args[0]) + "\" is not allowed as key!\n");
                     System.exit(1);
                 }
             } catch (NumberFormatException e){
-                System.out.println("Exception catched: " + e);
+                System.out.println("Couldn't parse argument to an integer.");
+                System.out.println("Exception catched: " + e +"\n");
                 System.exit(1);
             }
 
+            //Uses args[0] as seed for rand, args[1] for reading from binary file,
+            // and args[2] to write to a binary file.
             Random rand = new Random(Long.parseLong(args[0]));
-
             InputStream inputStream = new BufferedInputStream(new FileInputStream(args[1]));
             OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(args[2]));
 
+            // buffer used to buffer a determined "buffer size" to increase speed in I/O operations.
             byte [] buffer = new byte[bufferSize];
-            int byteRead;
+            int nrOfBytesRead;
 
-            while( (byteRead = inputStream.read(buffer)) != -1){
+            //while there is data in the buffer, take that data an XOR every element with a random byte,
+            //take the updated buffer and write to file.
+            while( (nrOfBytesRead = inputStream.read(buffer)) != -1){
 
-
-                outputStream.write(buffer, 0, byteRead);
+                for (int i = 0; i < buffer.length; i++){
+                    buffer[i] = (byte) (buffer[i] ^ rand.nextInt(256));
+                }
+                outputStream.write(buffer, 0, nrOfBytesRead);
             }
 
+            //close input/output-stream
+            inputStream.close();
+            outputStream.close();
+
+            System.out.println("Successfully executed the program. Good day!\n");
+            System.exit(0);
 
         } catch(Exception e){
+            System.out.println("Oops! Problem with reading from/writing to file.");
             System.out.println("Exception catched: " + e);
-            System.out.println("System exit! Good bye :(");
             System.exit(1);
         }
     }
