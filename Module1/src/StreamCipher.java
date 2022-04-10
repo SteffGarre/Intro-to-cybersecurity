@@ -42,7 +42,7 @@ public class StreamCipher {
             //Uses args[0] as seed for rand, args[1] for reading from binary file,
             // and args[2] to write to a binary file.
 
-            //Random rand = new MyRandom(Long.parseLong(args[0]));      //used on task 1
+            //Random rand = new Random(Long.parseLong(args[0]));      //used on task 1
             MyRandom rand = new MyRandom(Long.parseLong(args[0]));    //used on task 2
             InputStream inputStream = new BufferedInputStream(new FileInputStream(args[1]));
             OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(args[2]));
@@ -65,7 +65,7 @@ public class StreamCipher {
             inputStream.close();
             outputStream.close();
 
-            System.out.println("* * * Successfully executed the program. Good day! * * *\n");
+            System.out.println("\n* * * Successfully executed the program. Good day! * * *\n");
             System.exit(0);
 
         } catch(Exception e){

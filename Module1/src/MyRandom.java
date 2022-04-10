@@ -13,39 +13,35 @@ import java.util.Random;
 
 public class MyRandom extends Random {
 
-
-    final long m = 99991;    //a prime number
-    final int a = 6;
-    //final int [] primRootArray = {6, 153, 277, 417, 486, 922, 1292, 1754, 7906, 13116,
-    //                22473, 29291, 48911, 58376, 65856, 72577, 37121, 9477, 83744, 96962 };   // primitive roots to m
-    final int b = 0;
-    long seed;
-    //Random random = new Random();
+    final long m = 33029;    // a prime number
+    final int a = 899;       // a primitive root to m
+    final int b = 11;        // an additive constant
+    long mySeed;
 
     //Constructors
     public MyRandom(){
-       this.seed = System.nanoTime();
+
     }
 
     public MyRandom(long seed){
         setSeed(seed);
     }
 
+    //The two functions that are override from the java Random class
      @Override
      public int next(int bits){
 
-        //int randPos = random.nextInt(20);         // chooses a random pos in array a[]
-        //long nextSeed =((a[randPos] * seed) + b ) % m;  // implements the PRNG according to the formula above
-        long nextSeed =((a * seed) + b ) % m;
-        double r = (double) seed / m;                   // r gives us a double between (0,1)
+        long nextSeed =((a * mySeed) + b ) % m;
         setSeed(nextSeed);                              // set this.seed to nextSeed
-
-        return ((1 << bits) -1) & (int) Math.floor(((1 << bits) * r) + 1);
+        double r = (double) mySeed / m;                 // r gives us a double between (0,1)
+        int mask = ((1 << bits) -1);                    // mask bits
+        double y = Math.floor((mask * r) + 1);          // according to the lecture slide
+        return (int) y & mask;
     }
 
      @Override
      public void setSeed(long seed){
-        this.seed = seed;
+         mySeed= seed;
     }
 
 

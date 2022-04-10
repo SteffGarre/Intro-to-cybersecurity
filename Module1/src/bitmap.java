@@ -12,8 +12,8 @@ public class bitmap {
 
   public static BufferedImage map(int width, int height, long seed) {
 
-    //MyRandom random = new MyRandom(seed);
-    Random random = new Random(seed);
+    MyRandom random = new MyRandom(seed);
+    //Random random = new Random(seed);
 
     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
