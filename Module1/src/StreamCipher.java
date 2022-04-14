@@ -43,7 +43,7 @@ public class StreamCipher {
             // and args[2] to write to a binary file.
 
             // Random rand = new Random(Long.parseLong(args[0]));       //used on task 1
-            // MyRandom rand = new MyRandom(Long.parseLong(args[0]));   //used on task 2
+            //MyRandom rand = new MyRandom(Long.parseLong(args[0]));   //used on task 2
             MyRandom rand = new MyRandom(args[0]);                      //used on task 3
             InputStream inputStream = new BufferedInputStream(new FileInputStream(args[1]));
             OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(args[2]));
