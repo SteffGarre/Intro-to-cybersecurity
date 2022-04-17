@@ -4,7 +4,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *  Documentation used to implement the class:                                                 *
  *  Slides "SymmetricKeyEncryption", from the course IV1013 Introduction to Computer Security  *
- *  Pseudocode for the RC4 implementation: Slides mentioned above and the wikipedia article    *
+ *  Pseudocode for the RC4 implementation: Slides from course mentioned above and the wikipedia article    *
  *  for RC4 (https://en.wikipedia.org/wiki/RC4)                                                *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -71,10 +71,11 @@ public class MyRandom extends Random {
     //The RC4 Pseudo Random Generator algorithm
     @Override
     public int next(int bits){
-        i = (i + 1) % 256;
-        j = (j + S[i]) % 256;
+        i = ((i + 1) % 256) & 0xFF;
+        j = ((j + S[i]) % 256) & 0xFF;
+        int mask = ((1 << bits) -1);
         swapValues(S[i], S[j], i, j);
-        return S[( (S[i] + S[j]) % 256)];
+        return S[((S[i] + S[j]) % 256)] & mask;
     }
 
     //initialization of RC4, using the Key-scheduling algorithm (KSA)
@@ -89,7 +90,7 @@ public class MyRandom extends Random {
         }
         int y = 0;
         for (int x = 0; x < S.length; x++){
-            y = ((y + S[x] + key[(x % key.length)]) % 256);
+            y = ((y + S[x] + key[(x % key.length)]) % 256) & 0xFF;
             swapValues(S[x], S[y], x, y);
         }
     }

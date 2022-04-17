@@ -6,6 +6,7 @@
 
 
 import java.io.*;
+import java.math.BigInteger;
 import java.util.*;
 
 public class StreamCipher {
@@ -27,14 +28,21 @@ public class StreamCipher {
             //try to parse key as an integer, zero and negative numbers are not allowed.
             // If it fails -> system exit!
             try{
+                /* // Used for task 2
                 Long.parseLong(args[0]);
-
                 if(Long.parseLong(args[0]) < 1){
                     System.out.println("Integer \"" + Long.parseLong(args[0]) + "\" is not allowed as key!\n");
                     System.exit(1);
+                }*/
+
+                //Used for task 3
+                BigInteger key = new BigInteger(args[0]);
+                if( (key.compareTo(BigInteger.ZERO)) < 1){
+                    System.out.println("Integer \"" + key + "\" is not allowed as key!\n");
+                    System.exit(1);
                 }
             } catch (NumberFormatException e){
-                System.out.println("Couldn't parse argument to an integer.");
+                System.out.println("Couldn't parse argument to an integer, only integers > 0 are allowed.");
                 System.out.println("Exception catched: " + e +"\n");
                 System.exit(1);
             }
@@ -43,7 +51,8 @@ public class StreamCipher {
             // and args[2] to write to a binary file.
 
             // Random rand = new Random(Long.parseLong(args[0]));       //used on task 1
-            //MyRandom rand = new MyRandom(Long.parseLong(args[0]));   //used on task 2
+            //MyRandom rand = new MyRandom(Long.parseLong(args[0]));    //used on task 2
+
             MyRandom rand = new MyRandom(args[0]);                      //used on task 3
             InputStream inputStream = new BufferedInputStream(new FileInputStream(args[1]));
             OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(args[2]));
@@ -71,7 +80,7 @@ public class StreamCipher {
             System.exit(0);
 
         } catch(Exception e){
-            System.out.println("Oops! Problem with reading from/writing to file.");
+            System.out.println("\nOops! Problem with reading from/writing to file.");
             System.out.println("Exception catched: " + e);
             System.exit(1);
         }
