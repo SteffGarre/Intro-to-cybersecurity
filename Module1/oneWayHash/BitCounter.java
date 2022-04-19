@@ -52,6 +52,9 @@ public class BitCounter {
         // multiply with 4 to get total number of bits in the string.
         int length = args[0].length() * 4;
 
-        System.out.println("Nr of shared bits are: " + (length - result));
+
+        System.out.println("Program finished without errors."
+                +"\nNumber of shared bits between the two hash values are: " + (length - result));
+        System.exit(0);
     }
 }
