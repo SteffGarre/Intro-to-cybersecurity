@@ -65,7 +65,6 @@ public class MyRandom extends Random {
     */
 
 
-
     /* **** Functions below used for task 3 **** */
 
     //The RC4 Pseudo Random Generator algorithm

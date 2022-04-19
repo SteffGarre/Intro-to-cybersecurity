@@ -45,7 +45,7 @@ public class bitmap {
     MyRandom myRandom = new MyRandom(seed);
     Random random = new Random(seed);
 
-    System.out.println("MyRandom");
+    System.out.println("StreamCipher.StreamCipher.MyRandom");
     for (int i = 0; i < 10; i++) {
 
       System.out.println(myRandom.nextInt(256));

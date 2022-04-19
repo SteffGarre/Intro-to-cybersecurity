@@ -1,3 +1,4 @@
+
 /*
 * Code written by Stefan Garrido, 2022.03.26
 *  Guide used to implement a fast reading of binary files:
@@ -7,7 +8,6 @@
 
 import java.io.*;
 import java.math.BigInteger;
-import java.util.*;
 
 public class StreamCipher {
 
@@ -51,7 +51,7 @@ public class StreamCipher {
             // and args[2] to write to a binary file.
 
             // Random rand = new Random(Long.parseLong(args[0]));       //used on task 1
-            //MyRandom rand = new MyRandom(Long.parseLong(args[0]));    //used on task 2
+            //StreamCipher.StreamCipher.MyRandom rand = new StreamCipher.StreamCipher.MyRandom(Long.parseLong(args[0]));    //used on task 2
 
             MyRandom rand = new MyRandom(args[0]);                      //used on task 3
             InputStream inputStream = new BufferedInputStream(new FileInputStream(args[1]));
