@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Intro-to-cybersecurity.iml" filepath="$PROJECT_DIR$/.idea/Intro-to-cybersecurity.iml" />
       <module fileurl="file://$PROJECT_DIR$/Module1/Module1.iml" filepath="$PROJECT_DIR$/Module1/Module1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Module3/Module3.iml" filepath="$PROJECT_DIR$/Module3/Module3.iml" />
     </modules>
   </component>
 </project>
