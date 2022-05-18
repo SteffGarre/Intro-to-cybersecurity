@@ -4,7 +4,6 @@
 * to crack the password hash in the password file.
 * */
 
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +142,6 @@ public class PasswordCrack {
 
                     for (String string : currentList) {
                         for (int j = 0; j < hashedPasswords.size(); j++) {
-
                             if (jcrypt.crypt(salts.get(j), string).equals(hashedPasswords.get(j))) {
                                 System.out.println(string);
                                 hashedPasswords.remove(hashedPasswords.get(j));
@@ -198,7 +196,6 @@ public class PasswordCrack {
         }
         return false;
     }
-    
 
     //help function is used when a double mangle of a name is required
     private static Boolean dubbelcheckNames (List<String> list, String salt, String hash){
@@ -223,7 +220,6 @@ public class PasswordCrack {
         }
         return false;
     }
-
 
     //mangles a word according to the suggested list in assignment description
     private static List<String> mangleWord(String string, Boolean control){
