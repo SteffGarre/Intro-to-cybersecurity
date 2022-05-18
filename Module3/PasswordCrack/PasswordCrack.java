@@ -14,8 +14,6 @@ public class PasswordCrack {
     final static char [] charactersLow = "abcdefghijklmnopqrstuvwxyz".toCharArray();
     final static char [] charactersUpp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
     final static char [] charactersNumb = "0123456789".toCharArray();
-    private static List<String> listWithMangles = new ArrayList<>();
-
 
     public static void main(String[] args) {
 
@@ -146,9 +144,6 @@ public class PasswordCrack {
                     for (String string : currentList) {
                         for (int j = 0; j < hashedPasswords.size(); j++) {
 
-                            if(round == 1){
-                                listWithMangles.add(string);
-                            }
                             if (jcrypt.crypt(salts.get(j), string).equals(hashedPasswords.get(j))) {
                                 System.out.println(string);
                                 hashedPasswords.remove(hashedPasswords.get(j));
