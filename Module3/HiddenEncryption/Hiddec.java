@@ -101,7 +101,6 @@ public class Hiddec {
         byte [] inputFileDecrypted = null;
 
         if(ctr == null){
-
             //Create cipher object for ECB
             Cipher cipher;
             SecretKeySpec cipherKey = new SecretKeySpec(keyInBytes, "AES");
