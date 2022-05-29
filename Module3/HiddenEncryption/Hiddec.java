@@ -38,53 +38,38 @@ public class Hiddec {
         String ctr = null;
         byte[] inputFile = null;
         String outputFile = null;
-        int pos1, pos2;
 
-        // try/catch used for verification and assignment of arguments
-        try {
+        //Try to assign arguments to variables
+        try{
+            for (String argument : args) {
 
-            //check that the first arg is actually a key
-            splitted = args[0].split("=");
-            if (!(("--key").equals(splitted[0]))) {
-                System.out.println("Wrong input for argument: <--key>");
-                System.exit(-1);
-            }
-            key = splitted[1];
-
-            //check if an optinal argument exist (eg. --ctr)
-            if (args.length == 4) {
-
-                splitted = args[1].split("=");
-                if (!(("--ctr").equals(splitted[0]))) {
-                    System.out.println("Wrong input for argument: <--ctr>");
+                splitted = argument.split("=");
+                if(splitted.length != 2){
+                    System.out.println("One of the arguments has an invalid format.");
                     System.exit(-1);
                 }
-                ctr = splitted[1];
-                pos1 = 2;
-                pos2 = 3;
-            } else {
-                pos1 = 1;
-                pos2 = 2;
+                switch (splitted[0]) {
+                    case "--key" -> key = splitted[1];
+                    case "--ctr" -> ctr = splitted[1];
+                    case "--input" -> inputFile = Files.readAllBytes(Paths.get(splitted[1]));
+                    case "--output" -> outputFile = splitted[1];
+                    default -> {
+                        System.out.println("One of the arguments couldn't be matched. Please check format: ");
+                        System.out.println("Args: <--key=KEY>, [optional: <--ctr=CTR>], <--input=INPUT>, <--output=OUTPUT>>");
+                        System.exit(-1);
+                    }
+                }
             }
-
-            //check args for input & output file, assign if OK.
-            splitted = args[pos1].split("=");
-            if (!(("--input").equals(splitted[0]))) {
-                System.out.println("Wrong input for argument: <--input>");
-                System.exit(-1);
-            }
-            inputFile = Files.readAllBytes(Paths.get(splitted[1]));
-
-            splitted = args[pos2].split("=");
-            if (!(("--output").equals(splitted[0]))) {
-                System.out.println("Wrong input for argument: <--output>");
-                System.exit(-1);
-            }
-            outputFile = splitted[1];
-
         } catch (Exception e) {
             System.out.println("A problem with reading from arguments!" +
                     "\nException catched: " + e);
+            System.exit(-1);
+        }
+
+        //Check that the necessary arguments are given
+        if(key == null || inputFile == null || outputFile == null){
+            System.out.println("Error with arguments, the following arguments must be given: ");
+            System.out.println("<--key=KEY>, <--input=INPUT>, and <--output=OUTPUT> ");
             System.exit(-1);
         }
 
@@ -136,6 +121,7 @@ public class Hiddec {
                     "\nException catched: " + e);
             System.exit(-1);
         }
+
     }
 
     // according to Character.digit documentation in java:

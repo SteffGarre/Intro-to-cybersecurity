@@ -8,22 +8,21 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Hidenc {
 
     public static void main(String[] args) {
 
-        //if nr of args != 4,5,6 -> exit!
+        //If nr of args != 4,5,6 -> exit!
         if (args.length < 4 || args.length > 6) {
             System.out.println("Invalid number of arguments!" +
                     "\nArgs: <--key=KEY>, [optional: <--ctr=CTR>], [optional: <--offset=OFFSET>]," +
-                    " <--input=INPUT>, <--output=OUTPUT>, and either <--template=TEMPLATE> OR <--size=Size>");
+                    " <--input=INPUT>, <--output=OUTPUT>, and either <--template=TEMPLATE> OR <--size=SIZE>");
             System.exit(-1);
         }
 
-        //variable initialization
+        //Variable initialization
         String[] splitted;
         String key = null;
         String ctr = null;
@@ -33,7 +32,7 @@ public class Hidenc {
         byte[] templateInBytes = null;
         int size = -1;
 
-        //try to assign arguments to variables
+        //Try to assign arguments to variables
         try{
             for (String argument : args) {
 
@@ -43,34 +42,22 @@ public class Hidenc {
                     System.exit(-1);
                 }
                 switch (splitted[0]) {
-                    case "--key":
-                        key = splitted[1];
-                        break;
-                    case "--ctr":
-                        ctr = splitted[1];
-                        break;
-                    case "--offset":
+                    case "--key" -> key = splitted[1];
+                    case "--ctr" -> ctr = splitted[1];
+                    case "--offset" -> {
                         offset = Integer.parseInt(splitted[1]);
                         //check that offset value isn't negative and a multiple of 16.
-                        if(offset < 0 || offset % 16 != 0){
+                        if (offset < 0 || offset % 16 != 0) {
                             System.out.println("Error with offset: " +
                                     "\nCheck that offset isn't negative and that it is a multiple of 16.");
                             System.exit(-1);
                         }
-                        break;
-                    case "--input":
-                        inputFile = Files.readAllBytes(Paths.get(splitted[1]));
-                        break;
-                    case "--output":
-                        outputFile = splitted[1];
-                        break;
-                    case "--template":
-                        templateInBytes = Files.readAllBytes(Paths.get(splitted[1]));
-                        break;
-                    case "--size":
-                        size = Integer.parseInt(splitted[1]);
-                        break;
-                    default: {
+                    }
+                    case "--input" -> inputFile = Files.readAllBytes(Paths.get(splitted[1]));
+                    case "--output" -> outputFile = splitted[1];
+                    case "--template" -> templateInBytes = Files.readAllBytes(Paths.get(splitted[1]));
+                    case "--size" -> size = Integer.parseInt(splitted[1]);
+                    default -> {
                         System.out.println("One of the arguments couldn't be matched. Please check format: ");
                         System.out.println("Args: <--key=KEY>, [optional: <--ctr=CTR>], [optional: <--offset=OFFSET>]," +
                                 " <--input=INPUT>, <--output=OUTPUT>, and either <--template=TEMPLATE> OR <--size=Size>");
@@ -84,36 +71,30 @@ public class Hidenc {
             System.exit(-1);
         }
 
-        //check that only one is given (--template or --size)
+        //Check that only one is given (--template or --size)
         if(templateInBytes != null && size != -1){
             System.out.println("Error: either argument for --template OR --size can be given.");
             System.exit(-1);
         }
 
-        //check that the necessary arguments are given
+        //Check that the necessary arguments are given
         if(key == null || inputFile == null || outputFile == null || (templateInBytes == null && size < 0)){
             System.out.println("Error with arguments, the following arguments must be given: ");
             System.out.println("<--key=KEY>, <--input=INPUT>, <--output=OUTPUT>, and either <--template=TEMPLATE> OR <--size=Size>");
             System.exit(-1);
         }
 
-        //check that input file contains data to encrypt
+        //Check that input file contains data to encrypt
         if(inputFile.length == 0 || inputFile.length % 16 != 0){
             System.out.println("Error with input file: " +
                     "\nCheck that file isn't empty or that it is a multiple of 16.");
             System.exit(-1);
         }
 
-        //variable initialization
+        //Variable initialization
         byte[] ctrInBytes = null;
         Random random = new Random();
         Cipher cipher = null;
-
-        //generate random bytes and store them in templateInBytes (according to given size)
-        if(templateInBytes == null){
-            templateInBytes = new byte[size];
-            random.nextBytes(templateInBytes);
-        }
 
         //convert key and ctr to byte arrays
         byte[] keyInBytes = hexToByteArray(key);
@@ -126,11 +107,11 @@ public class Hidenc {
         try{
             if(ctr == null){
                 cipher = Cipher.getInstance("AES/ECB/NoPadding");
-                cipher.init(Cipher.DECRYPT_MODE,cipherKey);
+                cipher.init(Cipher.ENCRYPT_MODE,cipherKey);
             }else{
                 cipher = Cipher.getInstance("AES/CTR/NoPadding");
                 IvParameterSpec ivParam = new IvParameterSpec(ctrInBytes);
-                cipher.init(Cipher.DECRYPT_MODE, cipherKey, ivParam);
+                cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ivParam);
             }
         } catch(Exception e){
             System.out.println("A problem occurred when creating a Cipher object." +
@@ -138,7 +119,7 @@ public class Hidenc {
             System.exit(-1);
         }
 
-        //hash key and data found in inputFile using MD5
+        //Hash key and data found in inputFile using MD5
         byte[] keyHashed = md5Hash(keyInBytes);
         byte[] dataHashed = md5Hash(inputFile);
 
@@ -149,45 +130,68 @@ public class Hidenc {
         try{
             blobEncrypted = cipher.update(blob);
         }catch (Exception e){
-            System.out.println("A problem occurred when encryptning blob" +
+            System.out.println("A problem occurred when encrypting blob" +
                     "\nException catched: " + e);
             System.exit(-1);
         }
 
+        // If no template is given then generate random bytes and store them in
+        // templateInBytes (according to given size)
+        if(templateInBytes == null){
+            templateInBytes = new byte[size];
+            random.nextBytes(templateInBytes);
+        }
 
+        //Check if the blob fits inside the template (container)
+        if(blobEncrypted.length > templateInBytes.length){
+            System.out.println("The encrypted blob is larger than the container." +
+                    "\nDubbelcheck the requested SIZE or the given TEMPLATE");
+            System.exit(-1);
+        }
 
+        // Check if an offset is given, if not generate a random offset.
+        if(offset == -1){
 
-        /*
-        //Testing of blob and data related to that
-        System.out.println("Blob:");
-        System.out.println(Arrays.toString(blob));
-        System.out.println();
+            //if the blob is the same size as the template, set offset to zero.
+            if(blobEncrypted.length == templateInBytes.length){
+                offset = 0;
+            }else{
 
-        System.out.println("key hashed:");
-        System.out.println(Arrays.toString(keyHashed));
-        System.out.println();
+                //the upperLimit is when the blob is placed at the end of the container
+                int upperLimit = templateInBytes.length - blobEncrypted.length;
+                int randomInt;
+                boolean found = false;
 
-        System.out.println("data:");
-        System.out.println(Arrays.toString(inputFile));
-        System.out.println();
+                //Generate a random number R €[0, upperLimit], add +1 to R until R % 16 = 0.
+                // if R > upperLimit then start over. This way we don't spend time generating
+                // a lot of random numbers until an R is found.
+                do {
+                    randomInt = (int) (Math.random() * (upperLimit + 1));
+                    while (randomInt <= upperLimit) {
 
-        System.out.println("dataHashed:");
-        System.out.println(Arrays.toString(dataHashed));
+                        if (randomInt % 16 == 0) {
+                            offset = randomInt;
+                            found = true;
+                            break;
+                        }
+                        randomInt++;
+                    }
+                } while (!found);
+            }
+        }
 
-        System.out.println("size of Blob: " + blob.length);
-        System.out.println("size of keyHashed: " + keyHashed.length*2);
-        System.out.println("size of data: " + inputFile.length);
-        System.out.println("size of dataHashed: " + dataHashed.length);
-        System.out.println("Total: " + (keyHashed.length*2 + inputFile.length + dataHashed.length));
+        //check that a given offset is valid so that the blob fits in the container
+        if(offset + blob.length > templateInBytes.length){
+            System.out.println("The given offset is invalid, blob will end up outside the container.");
+            System.exit(-1);
+        }
 
-         */
+        //write the encrypted blob into the template
+        for(int i = 0, j = offset; i < blobEncrypted.length; i++,j++){
+            templateInBytes[j] = blobEncrypted[i];
+        }
 
-
-
-
-        /*
-
-        //write to output file
+        //Try to write to output file
         try{
             Files.write(Paths.get(outputFile), templateInBytes);
         }catch(Exception e){
@@ -195,9 +199,6 @@ public class Hidenc {
                     "\nException catched: " + e);
             System.exit(-1);
         }
-
-        */
-
 
     }
 
