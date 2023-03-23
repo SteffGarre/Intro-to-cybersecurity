@@ -4,8 +4,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *  Documentation used to implement the class:                                                 *
  *  Slides "SymmetricKeyEncryption", from the course IV1013 Introduction to Computer Security  *
- *  Pseudocode for the RC4 implementation: Slides from course mentioned above and the wikipedia article    *
- *  for RC4 (https://en.wikipedia.org/wiki/RC4)                                                *
+ *  Pseudocode for the RC4 implementation: Slides from course mentioned above and the          *
+ *  wikipedia article for RC4 (https://en.wikipedia.org/wiki/RC4)                              *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Background for task 2:
